@@ -1,0 +1,1 @@
+# .NET OpenTelemetry sample app
