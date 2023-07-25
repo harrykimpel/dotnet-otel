@@ -15,16 +15,21 @@ public class HomeController : Controller
 
     public IActionResult Index()
     {
+        DiagnosticsConfig.logger.LogInformation(eventId: 123, "Starting some work in the Index controller ...");
+
+        DiagnosticsConfig.logger.LogInformation(eventId: 123, "setting activity tags");
         // Track work inside of the request
         using var activity = DiagnosticsConfig.ActivitySource.StartActivity("SayHello");
         activity?.SetTag("foo", 1);
         activity?.SetTag("bar", "Hello, World!");
         activity?.SetTag("baz", new int[] { 1, 2, 3 });
 
+        DiagnosticsConfig.logger.LogInformation(eventId: 123, "updating the metrics counter");
         DiagnosticsConfig.RequestCounter.Add(1,
             new("Action", nameof(Index)),
             new("Controller", nameof(HomeController)));
 
+        DiagnosticsConfig.logger.LogInformation(eventId: 123, "showing the view");
         return View();
     }
 

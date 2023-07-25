@@ -5,6 +5,7 @@ using OpenTelemetry.Metrics;
 using System.Diagnostics.Metrics;
 using OpenTelemetry.Logs;
 
+DiagnosticsConfig.logger.LogInformation(eventId: 123, "Getting started!");
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -18,7 +19,7 @@ builder.Services.AddOpenTelemetry()
             .ConfigureResource(resource => resource
                 .AddService(DiagnosticsConfig.ServiceName))
             .AddAspNetCoreInstrumentation()
-            .AddConsoleExporter()
+            //.AddConsoleExporter()
             .AddOtlpExporter()
         )
     .WithMetrics(metricsProviderBuilder =>
@@ -26,20 +27,23 @@ builder.Services.AddOpenTelemetry()
             .ConfigureResource(resource => resource
                 .AddService(DiagnosticsConfig.ServiceName))
             .AddAspNetCoreInstrumentation()
-            .AddConsoleExporter()
+            //.AddConsoleExporter()
             .AddMeter(DiagnosticsConfig.Meter.Name)
             .AddOtlpExporter()
         );
 
 // Add OpenTelemetry Logs to our Service Collection
-builder.Logging.AddOpenTelemetry(x =>
+/*builder.Logging.AddOpenTelemetry(x =>
 {
     x.SetResourceBuilder(ResourceBuilder.CreateDefault().AddService("MyService"));
     x.IncludeFormattedMessage = true;
     x.IncludeScopes = true;
     x.ParseStateValues = true;
     x.AddOtlpExporter();
-});
+});*/
+
+//Console.WriteLine("Done with Otel config ...");
+DiagnosticsConfig.logger.LogInformation(eventId: 123, "Done with Otel config ...");
 
 var app = builder.Build();
 
@@ -72,4 +76,16 @@ public static class DiagnosticsConfig
     public static Meter Meter = new(ServiceName);
     public static Counter<long> RequestCounter =
         Meter.CreateCounter<long>("app.request_counter");
+
+    public static ILogger logger = LoggerFactory.Create(builder =>
+        {
+            builder.AddOpenTelemetry(options =>
+            {
+                //options.AddConsoleExporter();
+                options.AddOtlpExporter();
+                options.SetResourceBuilder(ResourceBuilder.CreateDefault().AddService(
+                    serviceName: "MyService",
+                    serviceVersion: "1.0.0"));
+            });
+        }).CreateLogger<Program>();
 }
