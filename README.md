@@ -2,7 +2,7 @@
 
 This app exports traces, metrics as well as logs via OpenTelemetry exporter to an OpenTelemetry collector such as New Relic.
 
-Note: OTLP exporter for logs is in beta for now.
+Note: OTLP exporter for logs is in mixed support state for now. See link to [docs](https://opentelemetry.io/docs/instrumentation/net/) for up-to-date information.
 
 The OTLP exporter leverages some environment variables (as shown in [env-vars.sh](/env-vars.sh)) to configure the OTLP collector backend:
 
