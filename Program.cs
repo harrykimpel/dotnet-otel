@@ -84,7 +84,7 @@ public static class DiagnosticsConfig
                 //options.AddConsoleExporter();
                 options.AddOtlpExporter();
                 options.SetResourceBuilder(ResourceBuilder.CreateDefault().AddService(
-                    serviceName: "MyService",
+                    serviceName: ServiceName,
                     serviceVersion: "1.0.0"));
             });
         }).CreateLogger<Program>();
