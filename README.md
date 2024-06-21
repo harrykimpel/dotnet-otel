@@ -9,5 +9,5 @@ The OTLP exporter leverages some environment variables (as shown in [env-vars.sh
 ```shell
 export OTEL_EXPORTER_OTLP_ENDPOINT=https://otlp.nr-data.net
 export OTEL_EXPORTER_OTLP_PROTOCOL=http/protobuf
-export OTEL_EXPORTER_OTLP_HEADERS='api-key=NR_LICENSE_KEY'
+export OTEL_EXPORTER_OTLP_HEADERS="api-key=${NEW_RELIC_LICENSE_KEY}"
 ```

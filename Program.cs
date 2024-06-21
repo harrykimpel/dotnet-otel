@@ -4,8 +4,11 @@ using OpenTelemetry.Trace;
 using OpenTelemetry.Metrics;
 using System.Diagnostics.Metrics;
 using OpenTelemetry.Logs;
+using OpenTelemetry.Exporter;
+using OpenTelemetry;
 
-DiagnosticsConfig.logger.LogInformation(eventId: 123, "Getting started!");
+// DiagnosticsConfig.logger.LogInformation(eventId: 123, "Getting started!");
+Console.WriteLine("Getting started!");
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -33,17 +36,17 @@ builder.Services.AddOpenTelemetry()
         );
 
 // Add OpenTelemetry Logs to our Service Collection
-/*builder.Logging.AddOpenTelemetry(x =>
+builder.Logging.AddOpenTelemetry(x =>
 {
-    x.SetResourceBuilder(ResourceBuilder.CreateDefault().AddService("MyService"));
+    x.SetResourceBuilder(ResourceBuilder.CreateDefault().AddService(DiagnosticsConfig.ServiceName));
     x.IncludeFormattedMessage = true;
     x.IncludeScopes = true;
     x.ParseStateValues = true;
     x.AddOtlpExporter();
-});*/
+});
 
-//Console.WriteLine("Done with Otel config ...");
-DiagnosticsConfig.logger.LogInformation(eventId: 123, "Done with Otel config ...");
+Console.WriteLine("Done with Otel config ...");
+// DiagnosticsConfig.logger.LogInformation(eventId: 123, "Done with Otel config ...");
 
 var app = builder.Build();
 
@@ -70,22 +73,22 @@ app.Run();
 
 public static class DiagnosticsConfig
 {
-    public const string ServiceName = "MyService";
+    public const string ServiceName = "dotnet-otel";
     public static ActivitySource ActivitySource = new ActivitySource(ServiceName);
 
     public static Meter Meter = new(ServiceName);
     public static Counter<long> RequestCounter =
         Meter.CreateCounter<long>("app.request_counter");
 
-    public static ILogger logger = LoggerFactory.Create(builder =>
-        {
-            builder.AddOpenTelemetry(options =>
-            {
-                //options.AddConsoleExporter();
-                options.AddOtlpExporter();
-                options.SetResourceBuilder(ResourceBuilder.CreateDefault().AddService(
-                    serviceName: ServiceName,
-                    serviceVersion: "1.0.0"));
-            });
-        }).CreateLogger<Program>();
+    // public static ILogger logger = LoggerFactory.Create(builder =>
+    //     {
+    //         builder.AddOpenTelemetry(options =>
+    //         {
+    //             //options.AddConsoleExporter();
+    //             options.AddOtlpExporter();
+    //             options.SetResourceBuilder(ResourceBuilder.CreateDefault().AddService(
+    //                 serviceName: ServiceName,
+    //                 serviceVersion: "1.0.0"));
+    //         });
+    //     }).CreateLogger<Program>();
 }
